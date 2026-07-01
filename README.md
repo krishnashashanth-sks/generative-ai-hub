@@ -1,67 +1,143 @@
-# generative-ai-hub
+# Generative AI Hub
 
-A collection of generative models and example projects for audio, image, text-to-image, text-to-video, and video summarization implemented with PyTorch, TensorFlow, and other libraries.
+A small collection of concise, educational implementations and example projects for generative models across audio, image, text→image, text→video, and video summarization — implemented in Python with PyTorch. Each top-level folder contains a minimal pipeline: dataset, model definitions, training loop, and a runnable entrypoint.
 
-## Repository structure
+## Quick Summary
 
-- audio-generation/  
-  Example projects and models for generating or transforming audio (speech synthesis, music generation, audio enhancement).
+- Modalities: audio (TTS / vocoder), image (GAN), text→image, text→video experiments, and video summarization.
+- Purpose: learning reference implementations and reproducible experiments, not production-ready systems.
+- Who it's for: researchers, students, and engineers who want compact example code to experiment with generative models.
 
-- image_generation/  
-  Image generation models and notebooks (GANs, diffusion models, and image transformers).
+### Stack
+- **Language(s):** Python 3.8+
+- **Framework / runtime:** PyTorch (torch, torchvision)
+- **Notable libraries:** torch, torchvision, matplotlib, soundfile
 
-- text-to-imagegeneration/  
-  Projects that convert text prompts into images (prompt engineering, sampler examples, pretrained checkpoints).
+## Repository Layout (Top-level)
 
-- text-to-video-generation/  
-  Experimental projects that convert text or scripts into video sequences or animations.
+```
+audio-generation/            # TTS & vocoder examples (FastSpeech2 + HiFiGAN)
+  dataset.py                 # dataset builders, vocabulary, constants
+  acoustic_model.py          # FastSpeech2-style acoustic model
+  vocoder_model.py           # HiFiGAN-style vocoder
+  train.py                   # training loops for acoustic + vocoder
+  inference.py               # end-to-end synthesis helpers
+  main.py                    # example orchestration (train + inference)
+  utils.py                   # helpers, collate functions
 
-- video-summarization/  
-  Tools and notebooks for summarizing or extracting highlights from videos using multimodal models.
+image_generation/            # Simple GAN example
+  dataset.py                 # dataset builder for images
+  generator.py               # Generator network
+  discriminator.py           # Discriminator network
+  train.py                   # GAN training loop
+  main.py                    # run training / visualize outputs
+  utils.py                   # weight init, helpers
 
+text-to-imagegeneration/     # Text-to-image experiment (GAN-style / conditional)
+  dataset.py
+  generator.py
+  discriminator.py
+  train.py
+  main.py
+  transform.py               # text/image transforms
+  utils.py
 
-## Getting started
+text-to-video-generation/    # Experimental text→video pipeline
+  dataset.py
+  model.py                   # model definitions and helper layers
+  layers.py
+  train.py
+  main.py
+  utils.py
+  vocabulary.py              # token/vocabulary utilities
 
-Prerequisites
+video-summarization/         # Video summarization and multimodal utilities
+  dataset.py
+  model.py
+  layers.py
+  train.py
+  main.py
+  inference.py               # example inference / summarization pipeline
+  utils.py
+README.md
+```
 
-- Python 3.8+  
-- PyTorch and/or TensorFlow (install per project requirements)  
-- Optional: CUDA-enabled GPU for training and some inference workloads
+## How It Fits Together
 
-Quick start
+Each subproject follows the same pattern: `dataset.py` builds datasets and DataLoaders, model files (e.g., `generator.py`, `acoustic_model.py`) define the networks, `train.py` implements training/validation loops, and `main.py` ties them together and saves outputs (generated_images/ or generated_audio/). The audio pipeline contains both an acoustic model (mel spectrogram predictor) and a vocoder for waveform synthesis; `inference.py` connects them for end-to-end synthesis.
 
-1. Clone the repository:
+## How To Get Started (Short Path)
 
+1. Clone:
    ```bash
    git clone https://github.com/krishnashashanth-sks/generative-ai-hub.git
    cd generative-ai-hub
    ```
 
-2. Inspect a subfolder (for example `audio-generation`) for its README or requirements file and follow the project-specific instructions:
-
-   ```bash
-   ls audio-generation
-   ```
-
-3. Create a virtual environment and install dependencies listed by a subproject (if present):
-
+2. Create a virtual environment and install core deps (example):
    ```bash
    python -m venv venv
-   source venv/bin/activate  # or venv\Scripts\activate on Windows
-   pip install -r audio-generation/requirements.txt  # adjust path to the project you want to run
+   source venv/bin/activate      # Windows: venv\Scripts\activate
+   pip install --upgrade pip
+   pip install torch torchvision matplotlib soundfile
    ```
+   Note: For GPU support install the appropriate CUDA build of PyTorch per https://pytorch.org.
 
+3. Run an example (each subfolder has a runnable `main.py`):
+   - Audio example (train acoustic + vocoder, then run inference):
+     ```bash
+     cd audio-generation
+     python main.py
+     # outputs saved to generated_audio/ by default
+     ```
+   - Image GAN example:
+     ```bash
+     cd ../image_generation
+     python main.py
+     # outputs saved to generated_images/
+     ```
+   - Text→image / Text→video / Video summarization:
+     ```bash
+     cd ../text-to-imagegeneration
+     python main.py
+
+     cd ../text-to-video-generation
+     python main.py
+
+     cd ../video-summarization
+     python main.py
+     ```
+
+4. If a subproject includes a `train.py`, you can call the training functions directly or inspect `main.py` for example training hyperparameters and data paths.
+
+## Expected Outputs
+- audio-generation: a directory `generated_audio/` with synthesized .wav files (inference example in `main.py`).
+- image_generation: a directory `generated_images/` with example generated images and loss plots.
+- text->* projects: model checkpoints, intermediate visualizations, and sample outputs depending on the subproject.
+
+## Recommendations (Improvements You May Want)
+- Add per-subproject `requirements.txt` files and a top-level `environment.yml` or `requirements.txt`.
+- Add short README files inside each top-level folder describing dataset source, expected data layout, and minimal commands to run training/inference.
+- Add example (or scripts) to download or point to pretrained checkpoints for faster demos.
+- Add unit tests or smoke tests that run a single training iteration on dummy data to validate environments.
+- Add a LICENSE file (choose an OSI-approved license if you want others to reuse).
 
 ## Contributing
 
-Contributions welcome — please open issues for bugs or feature requests and submit pull requests for fixes or new examples. Include a short README in any new subproject describing how to run the code and required dependencies.
+Contributions welcome. Please:
+1. Open an issue to discuss large changes.
+2. Add a short README for any new subproject you add with instructions and dependencies.
+3. Keep examples small and focused — each subproject should be runnable on a single-GPU or CPU for quick testing.
 
-
-## License
-
-If you have a license, add it to the repo and update this section. Otherwise, add a LICENSE file or choose an OSI-approved license.
-
+## Notes & Caveats
+- These are educational/simple reference implementations. They prioritize clarity and compactness over production performance, distributed training, or advanced checkpointing.
+- Some datasets and long-running experiments may not be included; adjust `dataset.py` or point to local data as needed.
 
 ## Contact
 
-Created by krishnashashanth-sks. For questions or collaboration, open an issue or a pull request.
+Created by krishnashashanth-sks. Open an issue or PR if you want help converting a subproject into a tested example or adding a requirements file, demo notebooks, or downloadable checkpoints.
+
+## Try Asking
+- "Can you add a README inside audio-generation that lists required audio libraries and sample commands for running inference?"
+- "Please create per-folder requirements.txt files (audio-generation/requirements.txt, image_generation/requirements.txt) with minimal packages needed to run main.py."
+- "Can you add a small script that downloads and unpacks example datasets (or synthetic data) so the examples can be run end-to-end on CPU?"
