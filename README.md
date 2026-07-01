@@ -136,8 +136,3 @@ Contributions welcome. Please:
 ## Contact
 
 Created by krishnashashanth-sks. Open an issue or PR if you want help converting a subproject into a tested example or adding a requirements file, demo notebooks, or downloadable checkpoints.
-
-## Try Asking
-- "Can you add a README inside audio-generation that lists required audio libraries and sample commands for running inference?"
-- "Please create per-folder requirements.txt files (audio-generation/requirements.txt, image_generation/requirements.txt) with minimal packages needed to run main.py."
-- "Can you add a small script that downloads and unpacks example datasets (or synthetic data) so the examples can be run end-to-end on CPU?"
