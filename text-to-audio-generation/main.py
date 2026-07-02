@@ -12,6 +12,7 @@ from train import train_model
 from torch.nn.utils.rnn import pad_sequence
 import matplotlib.pyplot as plt
 from inference import synthesize_mel_spectrogram
+import librosa
 
 #Use the below link to download the dataset files
 # https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2
@@ -156,7 +157,7 @@ sample_inference_text = "This is a test sentence for text to audio generation."
 print(f"\nGenerating Mel-spectrogram for: '{sample_inference_text}'")
 
 # Generate Mel-spectrogram
-generated_mel_spec = synthesize_mel_spectrogram(text_to_audio_model, sample_inference_text, char_to_idx, device)
+generated_mel_spec = synthesize_mel_spectrogram(model, sample_inference_text, char_to_idx, device)
 
 if generated_mel_spec is not None:
     print(f"Shape of generated Mel-spectrogram: {generated_mel_spec.shape}")
